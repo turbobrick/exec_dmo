@@ -13,7 +13,7 @@ public class SecondApp {
 	
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		Mixer mixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[Integer.parseInt(args[0])]);
-		AudioFormat af = new AudioFormat(Encoding.PCM_SIGNED, 48000f, 16, 2, 4, 48000f, false);
+		AudioFormat af = new AudioFormat(Encoding.PCM_SIGNED, 48000f, 16, 2, 4, 48000f, false); // Change to a valid one in your system.
 		
 		TargetDataLine line;
 		DataLine.Info info = new DataLine.Info(TargetDataLine.class, af);
