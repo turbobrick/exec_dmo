@@ -20,14 +20,15 @@ import org.apache.commons.exec.PumpStreamHandler;
 public class MainApp {
 
 	public static void main(String[] args) {
-		initStream("ffmpeg/bin");
+		initStream(".", "app2.jar");
 	}
 
-	public static void initStream(String path) {
+	public static void initStream(String path, String fileName) {
 		File file = new File(path);
 		for (File s : file.listFiles()) {
-			if (s.getName().equals("ffmpeg.exe")) {
+			if (s.getName().equals(fileName)) {
 				try {
+					
 					DefaultExecutor executor = new DefaultExecutor();
 					executor.setWorkingDirectory(file);
 
@@ -41,57 +42,22 @@ public class MainApp {
 					int n = reader.nextInt();
 					reader.close();
 
-					String executeMe = "java -jar app2.jar " + n; // Execute
-																	// .jar to
-																	// start
-																	// sending
-																	// sound
-																	// bytes to
-																	// stdout.
+					String executeMe = "java -jar app2.jar " + n;
 					commandLine = CommandLine.parse(executeMe);
 
-					PipedOutputStream output = new PipedOutputStream(); // Fill
-																		// this
-																		// with
-																		// bytes.
+					PipedOutputStream output = new PipedOutputStream(); 
 					PipedInputStream input = new PipedInputStream();
-					output.connect(input); // Send audio bytes from output to
-											// this input stream.
+					output.connect(input);
 
-					executor.setStreamHandler(new PumpStreamHandler(output, null)); // Stream
-																					// all
-																					// the
-																					// bytes
-																					// to
-																					// the
-																					// output.
-					executor.execute(commandLine, new DefaultExecuteResultHandler()); // Execute
-																						// APP2
-																						// (The
-																						// one
-																						// which
-																						// captures
-																						// the
-																						// live
-																						// audio
-																						// bytes).
+					executor.setStreamHandler(new PumpStreamHandler(output, null));
+					executor.execute(commandLine, new DefaultExecuteResultHandler()); 
 
-					// Icecast URL is set to the default parameters.
-					String feedMe = "ffmpeg -f s16le -ar 48000 -ac 2 -i - -f ogg -content_type application/ogg icecast://source:hackme@localhost:8000/stream";
+					String feedMe = "java -jar app3.jar";
 					commandLine = CommandLine.parse(feedMe);
 
-					executor.setStreamHandler(new PumpStreamHandler(null, null, input)); // Send
-																							// the
-																							// bytes
-																							// being
-																							// received
-																							// in
-																							// real
-																							// time
-																							// to
-																							// FFMPEG.
-					executor.execute(commandLine, new DefaultExecuteResultHandler()); // Execute
-																						// FFMPEG.
+					executor.setStreamHandler(new PumpStreamHandler(null, null, input));
+					executor.execute(commandLine, new DefaultExecuteResultHandler());
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
