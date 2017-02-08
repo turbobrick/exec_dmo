@@ -5,10 +5,12 @@ import java.io.IOException;
 
 public class SortOfFfmpeg {
 
-	public static void main(String[] args) throws ClassNotFoundException, IOException {
+	public static void main(String[] args) throws ClassNotFoundException, IOException, InterruptedException {
 		FileOutputStream fos = new FileOutputStream("test_byte_file");
-		while (System.in.read() != -1)
-			fos.write(System.in.read());
+                fos.flush();
+                int b;
+		while ((b = System.in.read()) != -1)
+			fos.write(b);
 		fos.close();
 	}
 }
